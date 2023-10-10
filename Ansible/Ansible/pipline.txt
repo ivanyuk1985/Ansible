@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+    environment {
+		home         = "/home/ubuntu/Ansible"
+		
+	}
+	parameters {
+  choice choices: ['Windows1', 'Windows2'], name: 'Choice'
+ 
+
+}
+
+    stages {
+        stage('test') {
+            steps {
+             dir("$home"){
+            
+        sh 'ansible-playbook -i Hosts.txt -l $Choice chrome.yml'
+             }
+        
+            }
+        }
+    }
+}
