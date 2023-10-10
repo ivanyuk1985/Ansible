@@ -1,0 +1,4 @@
+Set-ExecutionPolicy Unrestricted
+
+
+ansible -i Hosts.txt windows_server -m win_ping

@@ -1,0 +1,30 @@
+---
+- name: Install Chocolatey
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Download Chocolatey installer
+      win_shell: |
+        $url = 'https://chocolatey.org/install.ps1'
+        $file = 'C:\install-chocolatey.ps1'
+        (New-Object -TypeName System.Net.WebClient).DownloadFile($url, $file)
+
+    - name: Install Chocolatey
+      win_shell: powershell.exe -ExecutionPolicy Bypass -NoLogo -NonInteractive -NoProfile -File C:\install-chocolatey.ps1
+
+    - name: Import Chocolatey PowerShell module
+      win_shell: Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+
+    - name: Refresh environment variables
+      win_shell: |
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
+
+    - name: Verify Chocolatey installation
+      win_shell: choco --version
+      register: choco_output
+
+    - name: Display Chocolatey version
+      debug:
+        var: choco_output.stdout_lines
+
